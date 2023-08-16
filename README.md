@@ -44,6 +44,6 @@ $ nest generate <controller/service> <name> --no-spec ( nao cria o arquivo de te
 $ nest generate <controller/service> directory ( cria um arquitetura de pastas para o arquivo )
 $ nest generate <module> <name> ( cria o gerenciamento de controller e providers )
 $ nest g <class> directory --no-spec ( cria o DTO )
-
+Docker -> docker run --name postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
 ```
 # BackEndDashboardSaboaria

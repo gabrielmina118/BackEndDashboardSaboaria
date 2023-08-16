@@ -1,51 +1,62 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { users } from 'src/mock/users';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
+import { User } from './entities/user.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  findAll() {
-    return users;
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  public async findAll() {
+    return await this.userRepository.find();
   }
 
-  findOne(id: string) {
-    const user = users.find((user) => user.id === id);
+  public async create(userDto: CreateUserDto) {
+    const user = this.userRepository.create(userDto);
+    return await this.userRepository.save(user);
+  }
+
+  public async findOne(id: string): Promise<User> {
+    const user = await this.userRepository.findOne(id);
 
     if (!user) {
-      throw new HttpException(
+      throw new NotFoundException(
         `Não foi possivel achar usuário com id: ${id}`,
-        HttpStatus.NOT_FOUND,
       );
     }
 
     return user;
   }
 
-  create(userDto: CreateUserDto) {
-    users.push({ ...userDto, id: Date.now().toString() });
-    return users;
+  public async update(id: string, userDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException(
+        `Não foi possível achar usuário com id: ${id}`,
+      );
+    }
+
+    this.userRepository.merge(user, userDto);
+
+    return this.userRepository.save(user);
   }
 
-  update(id: string, userDto: UpdateCourseDto) {
-    const updateUsers = users.map((user) => {
-      if (user.id === id) {
-        return {
-          ...user,
-          ...userDto,
-        };
-      }
-      return user;
-    });
+  public async delete(id: string) {
+    const user = await this.userRepository.findOne(id);
 
-    return updateUsers;
-  }
+    if (!user) {
+      throw new NotFoundException(
+        `Não foi possível achar usuário com id: ${id}`,
+      );
+    }
 
-  delete(id: string) {
-    const userFilter = users.filter((user) => {
-      return user.id !== id;
-    });
-
-    return userFilter;
+    await this.userRepository.remove(user);
+    return `Usuário com id: ${id} removido com sucesso`;
   }
 }

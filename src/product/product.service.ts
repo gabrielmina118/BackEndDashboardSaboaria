@@ -1,39 +1,62 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
-import { products } from 'src/mock/users';
-
+import { UpdateProductDto } from './dto/update-product.dto';
+import { Product } from './entities/product.entity';
 @Injectable()
 export class ProductService {
-  create(productDto: CreateProductDto) {
-    const newProduct = { id: '123', ...productDto };
-    products.push(newProduct);
-    return newProduct;
+  // O repositório é quem possui os métodos para manipular os dados
+  constructor(
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+  ) {}
+
+  public async findAll() {
+    // Find quando nao recebe nenhum parâmetro , busca todos os dados(findAll)
+    return await this.productRepository.find();
   }
 
-  findOne(id: string) {
-    const product = products.find((product) => product.id === id);
+  public async create(productDto: CreateProductDto) {
+    // Cria o objeto do repositório e depois salva
+    const product = this.productRepository.create(productDto);
+    return await this.productRepository.save(product);
+  }
+
+  public async findOne(id: string) {
+    const product = await this.productRepository.findOne(id);
 
     if (!product) {
-      throw new HttpException(
+      throw new NotFoundException(
         `Não foi possível achar produto com id:${id}`,
-        HttpStatus.NOT_FOUND,
       );
     }
 
     return product;
   }
 
-  delete(id: string) {
-    const findProduct = products.find((product) => product.id === id);
+  async update(id: string, productDto: UpdateProductDto) {
+    const product = await this.productRepository.findOne(id);
 
-    if (!findProduct) {
-      throw new HttpException(
+    if (!product) {
+      throw new NotFoundException(
         `Não foi possível achar produto com id: ${id}`,
-        HttpStatus.NOT_FOUND,
       );
     }
+    this.productRepository.merge(product, productDto);
 
-    const productFilter = products.filter((product) => product.id !== id);
-    return productFilter;
+    return this.productRepository.save(product);
+  }
+
+  async delete(id: string) {
+    const product = await this.productRepository.findOne(id);
+
+    if (!product) {
+      throw new NotFoundException(
+        `Não foi possível achar produto com id: ${id}`,
+      );
+    }
+    await this.productRepository.remove(product);
+    return `Produto com id: ${id} removido com sucesso`;
   }
 }

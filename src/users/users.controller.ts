@@ -1,55 +1,54 @@
 import {
-  Body,
+  // Body,
   Controller,
   Get,
-  Param,
   Post,
+  Body,
+  Param,
   Res,
   Patch,
   Delete,
 } from '@nestjs/common';
-import { IUser, users } from 'src/mock/users';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UserService) {}
 
   @Get('all')
-  findAll(@Res() response): IUser[] {
+  async findAll(@Res() response) {
+    const users = await this.userService.findAll();
     return response.status(200).json(users);
+  }
+
+  @Post('create')
+  async create(@Body() createUserDto: CreateUserDto, @Res() response) {
+    const user = await this.userService.create(createUserDto);
+    return response.status(201).send(user);
   }
 
   // desestruturação de id
   @Get(':id')
-  findOne(@Param('id') id: string, @Res() response): string | IUser {
-    const findUser = this.userService.findOne(id);
-
-    return response.status(200).send({ message: findUser });
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string, @Res() response): IUser[] {
-    const removeuser = this.userService.delete(id);
-
-    return response.status(200).json({ users: removeuser });
-  }
-
-  @Post('create')
-  create(@Body() createUserDto: CreateUserDto, @Res() response) {
-    this.userService.create(createUserDto);
-    return response.status(201).send(createUserDto);
+  async findOne(@Param('id') id: string, @Res() response) {
+    const user = await this.userService.findOne(id);
+    return response.status(200).send({ user });
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateCourseDto,
+    @Body() updateUserDto: UpdateUserDto,
     @Res() response,
   ) {
-    const updateUsers = this.userService.update(id, updateUserDto);
-    return response.status(200).send({ message: updateUsers });
+    const user = await this.userService.update(id, updateUserDto);
+    return response.status(200).json({ user });
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string, @Res() response) {
+    const user = await this.userService.delete(id);
+    return response.status(200).json({ message: user });
   }
 }
