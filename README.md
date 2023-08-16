@@ -1,8 +1,26 @@
-## Description
+# BackEndDashboardSaboaria
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Este projeto serve como back-end para funcionar em um Dashboard de vendas na área da beleza e cosméticos. Este servidor registra todas as solicitações de API do site.
 
-## Installation
+## Em construção :construction:
+Esta api está em construção.
+
+## 🚀 Começando
+
+É possivel ler mais sobre a API do Dashboard [aqui](https://documenter.getpostman.com/view/24008527/2s93zE2zqu)
+
+## 🛠️ Construído com
+
+* Node  
+* typescript
+* Nest.js
+* TypeORM com BD Postgres
+* Prisma com BD Postgres
+* Docker
+* Swagger (Open API)
+
+  
+## Instalação
 
 ```bash
 $ npm install
@@ -21,8 +39,9 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## ⚙️ Executando os testes
 
+Para executar os testes , rode o comando:
 ```bash
 # unit tests
 $ npm run test
@@ -34,16 +53,3 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Comments
-
-```bash
-
-#create something
-$ nest generate <controller/service> <name>
-$ nest generate <controller/service> <name> --no-spec ( nao cria o arquivo de test )
-$ nest generate <controller/service> directory ( cria um arquitetura de pastas para o arquivo )
-$ nest generate <module> <name> ( cria o gerenciamento de controller e providers )
-$ nest g <class> directory --no-spec ( cria o DTO )
-Docker -> docker run --name postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
-```
-# BackEndDashboardSaboaria
