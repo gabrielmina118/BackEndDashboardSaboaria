@@ -4,7 +4,7 @@ services:
   app:
     build: .
     entrypoint: .docker/entrypoint.sh
-    container_name: cursonestjs-app
+    container_name: dashboardsaboaria-app
     ports:
       - "3001:3000"
     volumes:
@@ -14,7 +14,7 @@ services:
 
   db:
     build: .docker/postgres
-    container_name: cursonestjs-db
+    container_name: dashboardsaboaria-db
     restart: always
     tty: true
     ports:
@@ -22,31 +22,17 @@ services:
     volumes:
       - .docker/dbdata:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=postgres
-  
-  dbtest:
-    build: .docker/postgres
-    container_name: cursonestjs-dbtest
-    restart: always
+      - POSTGRES_PASSWORD=a258mina
+      - POSTGRES_DB=dashboardsaboaria
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: dashboardsaboaria-pgadmin
     tty: true
-    ports:
-      - "5433:5432"
-    volumes:
-      - .docker/dbdatatest:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=testdb
-
-
-#  pgadmin:
-#    image: dpage/pgadmin4
-#    container_name: cursonestjs-pgadmin
-#    tty: true
-#    environment:
-#      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-#      - PGADMIN_DEFAULT_PASSWORD=admin
-#    ports:
-#      - "8000:80"
-#    depends_on:
-#      - db
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "8000:80"
+    depends_on:
+      - db

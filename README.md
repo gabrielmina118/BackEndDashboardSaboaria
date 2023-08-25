@@ -37,6 +37,9 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+
+# Executar comando docker-compose , onde entra no container
+$ docker-compose exec app bash
 ```
 
 ## ⚙️ Executando os testes

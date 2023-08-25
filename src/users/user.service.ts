@@ -16,7 +16,7 @@ export class UserService {
     return await this.userRepository.find();
   }
 
-  public async create(userDto: CreateUserDto) {
+  public async create(userDto: any) {
     const user = this.userRepository.create(userDto);
     return await this.userRepository.save(user);
   }
@@ -33,7 +33,7 @@ export class UserService {
     return user;
   }
 
-  public async update(id: string, userDto: UpdateUserDto) {
+  public async update(id: string, userDto: any) {
     const user = await this.userRepository.findOne(id);
 
     if (!user) {
